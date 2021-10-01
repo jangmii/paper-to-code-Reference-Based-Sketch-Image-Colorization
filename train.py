@@ -17,10 +17,7 @@ from model import *
 from dataset import *
 from util import *
 import argparse
-<<<<<<< HEAD
 import transformation as tps
-=======
->>>>>>> 73b4d5ec62ed0f5edfa13ae9d5216662ea41b8b9
 
 class Train:
     
@@ -68,9 +65,11 @@ class Train:
         vgg_loss = VGGPerceptualLoss() #style loss + perceptual_loss
 
         for epoch in range(1,self.num_epoch+1):
+            print(epoch,"/",self.num_epoch)
             if epoch > 100:
                 optimG, optimD = self.schedule_optim(optimG, optimD, epoch)
             for index, [appearance_img, sketch_img] in enumerate(train_loader):
+                print("--index: ",index)
                 
                 appearance_img = appearance_img.float()
                 sketch_img = sketch_img.float()
@@ -87,10 +86,19 @@ class Train:
                 g_perceptual_loss, g_style_loss = vgg_loss(appearance_img, fake_I_gt)
                 
                 g_loss = g_l1_loss + g_triplet_loss + g_adversarial_loss + g_style_loss + g_perceptual_loss
-                
                 optimG.zero_grad()
                 g_loss.backward()
                 optimG.step()
+                
+            if(epoch%10==0):
+                #fake_I_gt 시각화를 해야할 것 같은데...
+                print("appearance_img: ",appearance_img.size(), appearance_img.type())
+                print("sketch_img: ",sketch_img.size(), sketch_img.type())
+                print("fake_I_gt: ",fake_I_gt.size(), fake_I_gt.type()) # torch.Size([1, 3, 256, 256])
+                #print("-> ",fake_I_gt.detach().numpy())
+                plt.imshow(np.transpose(fake_I_gt.detach().numpy()[0],(1,2,0)))
+                plt.show()
+                
                 
                 # ---------------------
                 #  Train Discriminator

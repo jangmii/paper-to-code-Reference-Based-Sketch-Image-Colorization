@@ -6,7 +6,6 @@ from PIL import Image
 from pathlib import Path
 import sys
 from scipy.ndimage.filters import gaussian_filter
-import tps
 from torchvision import transforms
 import cv2
 
