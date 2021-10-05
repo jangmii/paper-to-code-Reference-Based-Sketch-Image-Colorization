@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import torch.functional as F
 import torch.autograd as autograd
+from torchvision.utils import save_image
 import math
 from model import *
 from dataset import *
@@ -89,15 +90,18 @@ class Train:
                 optimG.zero_grad()
                 g_loss.backward()
                 optimG.step()
-                
-            if(epoch%10==0):
-                #fake_I_gt 시각화를 해야할 것 같은데...
-                print("appearance_img: ",appearance_img.size(), appearance_img.type())
-                print("sketch_img: ",sketch_img.size(), sketch_img.type())
-                print("fake_I_gt: ",fake_I_gt.size(), fake_I_gt.type()) # torch.Size([1, 3, 256, 256])
-                #print("-> ",fake_I_gt.detach().numpy())
-                plt.imshow(np.transpose(fake_I_gt.detach().numpy()[0],(1,2,0)))
-                plt.show()
+                    
+                if(epoch%10==0):
+                    #fake_I_gt 시각화를 해야할 것 같은데...
+                    #print("appearance_img: ",appearance_img.size(), appearance_img.type())
+                    #print("sketch_img: ",sketch_img.size(), sketch_img.type())
+                    print("fake_I_gt: ",fake_I_gt.size(), fake_I_gt.type()) # torch.Size([1, 3, 256, 256])
+                    img = fake_I_gt[0]
+                    save_image(img, 'img2000.png')
+                    #save_image(torch.cat((fake_I_gt.detach(),sketch_img), dim=1),'img100.png')
+                    #print("-> ",fake_I_gt.detach().numpy())
+                    #plt.imshow(np.transpose(fake_I_gt.detach().numpy()[0],(1,2,0)))
+                    #plt.show()
                 
                 
                 # ---------------------
